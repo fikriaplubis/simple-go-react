@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"net/http"
 	"os"
+
+	//"sync"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -25,6 +27,11 @@ type Data struct {
 
 var Datas []Data
 
+// type db struct {
+// 	data []Data
+// 	sync.Mutex
+// }
+
 func (d Data) tambahData() {
 	Datas = append(Datas, d)
 }
@@ -43,7 +50,7 @@ func postHandler(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(newData)
+	//fmt.Println(newData)
 	//db = append(db, newData.Text)
 	//Datas = append(Datas, newData)
 	newData.tambahData()
