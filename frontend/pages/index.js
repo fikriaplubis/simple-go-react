@@ -60,7 +60,7 @@ function Input({ onSuccess }) {
       {error && <p>error: {error.toString()}</p>}
       {data && <p>success: {data}</p>}
       <form onSubmit={handleSubmit}>
-        <input name="data" type="text" />
+        <input name="data" type="text"/>
         <button >Submit</button>
       </form>
     </div>
