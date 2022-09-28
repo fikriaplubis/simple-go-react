@@ -24,7 +24,8 @@ export default function Home() {
       {!data ? <div> Loading... </div> : ((data?.data ?? []).length === 0 && <p>data kosong</p>)}
       <Input onSuccess={getData} />
       {data?.data && data?.data?.map((item, index) => (
-        <p key={index}>{item}</p>
+        //<p key={index}>{item}</p>
+        <p key={index}>{item.text}</p>
       ))}
     </div>
   )
