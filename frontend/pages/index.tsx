@@ -24,10 +24,60 @@ export default function Home() {
       {!data ? <div> Loading... </div> : ((data?.data ?? []).length === 0 && <p>data kosong</p>)}
       <Input onSuccess={getData} />
       {data?.data && data?.data?.map((item, index) => (
-        //<p key={index}>{item}</p>
-        <p key={index}>{item.text}</p>
+        <div key={index}>
+          <input type="checkbox" defaultChecked={item.done} disabled={true} />
+          <span >ID: {item.ID} task: {item.task}</span>
+          <Checklist item={item} onSuccess={getData} />
+          <Delete id={item.ID} onSuccess={getData} />
+        </div>
       ))}
     </div>
+  )
+}
+
+function Checklist({ item, onSuccess }) {
+  const [setError] = useState(null);
+
+  const onClick = async (e) => {
+    try {
+      const body = {
+        task: item.task,
+        done: item.done == false ? true : false
+      }
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${item.ID}`, {
+        method: 'PUT',
+        body: JSON.stringify(body)
+      });
+      onSuccess();
+    }
+    catch (error) {
+      setError(error);
+    }
+  }
+
+  return (
+    <button disabled={item.done == true ? true : false} onClick={onClick}>Done</button>
+  )
+}
+
+function Delete({ id, onSuccess }) {
+  const [setError] = useState(null);
+
+  const onClick = async (e) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${id}`, {
+        method: 'DELETE',
+      });
+      onSuccess();
+    }
+    catch (error) {
+      setError(error);
+    }
+  }
+
+  return (
+    <button onClick={onClick}>Delete</button>
   )
 }
 
@@ -39,7 +89,7 @@ function Input({ onSuccess }) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const body = {
-      text: formData.get("data")
+      task: formData.get("data")
     }
 
     try {
