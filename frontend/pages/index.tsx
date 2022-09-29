@@ -18,19 +18,6 @@ export default function Home() {
     }
   }
 
-  const deleteData = async (id) => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${id}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json();
-      setData(data.message);
-    }
-    catch (error) {
-      setError(error);
-    }
-  }
-
   return (
     <div>
       {error && <div>Failed to load {error.toString()}</div>}
@@ -38,26 +25,50 @@ export default function Home() {
       <Input onSuccess={getData} />
       {data?.data && data?.data?.map((item, index) => (
         <div key={index}>
+          <input type="checkbox" defaultChecked={item.done} disabled={true} />
           <span >ID: {item.ID} task: {item.task}</span>
-          <input type="checkbox" defaultChecked={item.done} />
-          <Delete  id={item.ID} onSuccess={getData} />
+          <Checklist item={item} onSuccess={getData} />
+          <Delete id={item.ID} onSuccess={getData} />
         </div>
       ))}
     </div>
   )
 }
 
+function Checklist({ item, onSuccess }) {
+  const [setError] = useState(null);
+
+  const onClick = async (e) => {
+    try {
+      const body = {
+        task: item.task,
+        done: item.done == false ? true : false
+      }
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${item.ID}`, {
+        method: 'PUT',
+        body: JSON.stringify(body)
+      });
+      onSuccess();
+    }
+    catch (error) {
+      setError(error);
+    }
+  }
+
+  return (
+    <button disabled={item.done == true ? true : false} onClick={onClick}>Done</button>
+  )
+}
+
 function Delete({ id, onSuccess }) {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
+  const [setError] = useState(null);
 
   const onClick = async (e) => {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${id}`, {
         method: 'DELETE',
       });
-      const data = await res.json();
-      setData(data.message);
       onSuccess();
     }
     catch (error) {
