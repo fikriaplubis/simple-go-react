@@ -18,16 +18,55 @@ export default function Home() {
     }
   }
 
+  const deleteData = async (id) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      setData(data.message);
+    }
+    catch (error) {
+      setError(error);
+    }
+  }
+
   return (
     <div>
       {error && <div>Failed to load {error.toString()}</div>}
       {!data ? <div> Loading... </div> : ((data?.data ?? []).length === 0 && <p>data kosong</p>)}
       <Input onSuccess={getData} />
       {data?.data && data?.data?.map((item, index) => (
-        //<p key={index}>{item}</p>
-        <p key={index}>{item.text}</p>
+        <div key={index}>
+          <span >ID: {item.ID} task: {item.task}</span>
+          <input type="checkbox" defaultChecked={item.done} />
+          <Delete  id={item.ID} onSuccess={getData} />
+        </div>
       ))}
     </div>
+  )
+}
+
+function Delete({ id, onSuccess }) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  const onClick = async (e) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      setData(data.message);
+      onSuccess();
+    }
+    catch (error) {
+      setError(error);
+    }
+  }
+
+  return (
+    <button onClick={onClick}>Delete</button>
   )
 }
 
@@ -39,7 +78,7 @@ function Input({ onSuccess }) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const body = {
-      text: formData.get("data")
+      task: formData.get("data")
     }
 
     try {
