@@ -9,6 +9,7 @@ type Repository interface {
 	GetTodos() ([]models.Todos, error)
 	CreateTodos(task string) (models.Todos, error)
 	UpdateTodos(id int, req DataRequest) (models.Todos, error)
+	DeleteTodos(id int) error
 }
 
 type repository struct {
@@ -55,4 +56,15 @@ func (r *repository) UpdateTodos(id int, req DataRequest) (models.Todos, error) 
 	}
 
 	return todo, nil
+}
+
+func (r *repository) DeleteTodos(id int) error {
+	todo := models.Todos{}
+
+	res := r.db.Delete(&todo, id)
+	if res.Error != nil {
+		return res.Error
+	}
+
+	return nil
 }

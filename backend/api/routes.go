@@ -17,4 +17,5 @@ func (s *server) SetupRouter() {
 	s.Router.GET("/", todosHandler.GetTodos)
 	s.Router.POST("/send", todosHandler.CreateTodo)
 	s.Router.PUT("/:id", todosHandler.UpdateTodos)
+	s.Router.DELETE("/:id", todosHandler.DeleteTodos)
 }

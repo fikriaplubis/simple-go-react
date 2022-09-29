@@ -79,3 +79,24 @@ func (h *Handler) UpdateTodos(c *gin.Context) {
 		"data":    res,
 	})
 }
+
+func (h *Handler) DeleteTodos(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	status, err := h.Service.DeleteTodos(id)
+	if err != nil {
+		c.JSON(status, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(status, gin.H{
+		"message": "success",
+	})
+}
