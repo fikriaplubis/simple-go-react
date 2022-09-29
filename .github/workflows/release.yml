@@ -33,6 +33,7 @@ jobs:
       uses: actions/setup-go@v3
     - name: Test
       run: go test -cover -v ./backend/todos
+      working-directory: backend
 
   heroku:
     runs-on: ubuntu-latest
