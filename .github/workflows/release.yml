@@ -26,6 +26,15 @@ jobs:
         project_name: ''
         max_timeout_sec: '600'
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v3
+    - name: Test
+      run: go test -cover -v ./todos
+      working-directory: backend
+
   heroku:
     runs-on: ubuntu-latest
 
