@@ -55,3 +55,40 @@ func TestGetTodoService(t *testing.T) {
 	assert.Equal(t, req.Task, todos[1].Task)
 
 }
+
+func TestUpdateTodoService(t *testing.T) {
+	db := newTestDB(t)
+	repo := NewRepository(db)
+	service := NewService(repo)
+
+	newReq := DataRequest{
+		Task: "task 1",
+	}
+
+	newTodo, _, _ := service.CreateTodos(newReq)
+
+	updatedReq := DataRequest{
+		Task: "task 2",
+	}
+
+	updatedTodo, status, err := service.UpdateTodos(int(newTodo.ID), updatedReq)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, status)
+	assert.NotNil(t, updatedTodo)
+}
+
+func TestDeleteService(t *testing.T) {
+	db := newTestDB(t)
+	repo := NewRepository(db)
+	service := NewService(repo)
+
+	newReq := DataRequest{
+		Task: "task 1",
+	}
+
+	todo, _, _ := service.CreateTodos(newReq)
+
+	status, err := service.DeleteTodos(int(todo.ID))
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, status)
+}
