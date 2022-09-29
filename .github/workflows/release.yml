@@ -31,9 +31,10 @@ jobs:
     steps:
     - name: Set up Go
       uses: actions/setup-go@v3
+    - name: Build
+      run: go build ./backend
     - name: Test
       run: go test -cover -v ./backend/todos
-      working-directory: backend
 
   heroku:
     runs-on: ubuntu-latest
